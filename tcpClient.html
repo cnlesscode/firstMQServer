@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCP Client</title>
+<style>
+*{margin:0; padding:0; font-family:Microsoft YaHei, Arial, Helvetica, sans-serif; color:#FFFFFF; font-size:15px;}
+body{background-color:#000;}
+div{overflow:hidden; box-sizing:border-box;}
+#app{width:100%; height:100vh; max-width:1200px; margin:0 auto;}
+.flex{display:flex;}
+.rows, .row{flex-direction:row !important;}
+.columns, .column{flex-direction:column !important;}
+.wrap{flex-direction:row !important; flex-wrap:wrap !important;}
+.nowrap{flex-direction:row !important; flex-wrap:nowrap !important;}
+.space-around{justify-content:space-around !important;}
+.space-between{justify-content:space-between !important;}
+.justify-content-start{justify-content:flex-start !important;}
+.justify-content-center{justify-content:center !important;}
+.justify-content-end{justify-content:flex-end !important;}
+.align-items-start{align-items:flex-start !important;}
+.align-items-center{align-items:center !important;}
+.align-items-end{align-items:flex-end !important;}
+.flex1{flex:1 !important;}
+#left{width:30%; background:#1D1D1D; height:100vh; padding:20px; display:flex; flex-direction: column;}
+#left > ul{flex:1; margin-top:20px; overflow-y: auto;}
+#center{width:50%; margin-left:20px; background-color:#212332; flex:1; height:100vh; padding:20px;}
+.h3{font-size:18px; font-weight:bold; line-height:20px;}
+.input {display: block; width:200px; padding: 0.5rem 1rem; font-weight: 400; line-height: 1.3;
+    background-color: #2A2D3E;
+    background-clip: padding-box;
+    border:none;
+    appearance: none;
+    border-radius:5px;
+    outline: none;
+    box-sizing: border-box;
+    resize: none;
+}
+.button {
+    display: flex !important;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem 20px;
+    background:#2697FF;
+    border:none;
+    border-radius:5px;
+    cursor: pointer;
+}
+.button:active{
+    background-color:#0679cc;
+}
+ul li{list-style:none;}
+.server-item{background-color:#333333; line-height:1.5em; padding:10px; border-radius:3px; margin-bottom:15px;}
+.server-item .title{font-size:15px;}
+.server-item .desc{font-size:13px; margin-top:5px;}
+.quick-message{font-size:13px;}
+.quick-message span{cursor: pointer; font-size:13px;}
+.item-small-space{padding:6px;}
+.blue{color:#3688FF;}
+.font12{font-size:12px;}
+.consumer{padding-left:20px; font-size:12px;}
+.cursor{cursor: pointer;}
+::-webkit-scrollbar {width:5px; height:10px; background-color:#F5F5F5;}
+::-webkit-scrollbar-track{-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); background-color: #0679cc;}
+::-webkit-scrollbar-thumb{-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,.3); background-color: #555555;}
+</style>
+</head>
+<body>
+<div id="app" class="flex row space-between">
+    <div id="left">
+        <div class="flex row space-between" style="width:100%;">
+            <h3 class="h3">集群节点</h3>
+            <span class="cursor font12" @click="getServerStatus">刷新</span>
+        </div>
+        <ul v-if="serverList != null">
+            <li v-for="(item, k) in serverList" :key="k" class="server-item">
+                <div class="title blue">{{k}}</div>
+                <div class="title" style="margin-top:8px;">话题列表</div>
+                <ul style="margin-top:5px;">
+                    <li class="item-small-space" v-for="(topic, topicIndex) in item">
+                        <div>▤ {{topicIndex}}&nbsp;&nbsp;<span class="font12">( {{topic.saveIndex}} )</span></div>
+                        <ul>
+                            <li class="consumer" v-for="(consumer, consumerIndex) in topic.consumerGroups">
+                                |_ {{consumer.Name}} : {{consumer.ConsumeIndex}}/{{consumer.FillIndex}}
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <div style="height:10px;"></div>
+    </div>
+    <div id="center">
+        <div class="title">连接信息</div>
+        <div class="flex row space-between" style="margin-top:15px;">
+            <input 
+            type="text" class="input flex1" v-model="serverAddr" />
+            <button 
+            type="button" class="button" style="margin-left:15px;" 
+            @click="connect">连接</button>
+        </div>
+        <div class="title" style="margin-top:25px;">响应结果</div>
+        <div style="margin-top:15px;">
+            <textarea class="input" id="result" v-model="responseMessage" style="height:288px; width:100%; scroll-margin-top:900px;"></textarea>
+        </div>
+        <div class="title" style="margin-top:25px;">发送消息</div>
+        <div style="margin-top:15px;">
+            <textarea class="input" v-model="defaultMessage" style="height:88px; width:100%;"></textarea>
+        </div>
+        <div class="flex row space-between" style="margin-top:12px;">
+            <div class="quick-message flex1">
+                快捷命令 :&nbsp;&nbsp;
+                <span @click="quickMessage(1)">生产</span>
+                &nbsp;&nbsp;·&nbsp;&nbsp;
+                <span @click="quickMessage(2)">消费</span>
+                &nbsp;&nbsp;·&nbsp;&nbsp;
+                <span @click="quickMessage(3)">创建话题</span>
+                &nbsp;&nbsp;·&nbsp;&nbsp;
+                <span @click="quickMessage(7)">创建消费者组</span>
+            </div>
+            <button class="button" @click="submitMessage">发送</button>
+        </div>
+    </div>
+</div>
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script>
+const { createApp, ref } = Vue;
+createApp({
+    data:function(){
+        return {
+            serverAddr : "192.168.31.100:8802",
+            responseMessage : "",
+            socket : null,
+            serverList : null,
+            defaultMessage : "",
+            pool : null,
+        }
+    },
+    mounted:function(){},
+    methods:{
+        connect:function(){
+            if(this.socket != null){
+                this.responseMessage += "… 当前连接关闭中 ...\n";
+                this.socket.close();
+                this.socket = null;
+                return ;
+            }
+            this.responseMessage += "… " +  this.serverAddr+" 连接中 ...\n";
+            this.socket = new WebSocket('ws://'+this.serverAddr);
+            this.socket.onopen = ()=>{
+                this.responseMessage += "✔ " + this.serverAddr+" 连接成功\n";
+                // 查询服务器列表
+                this.getServerStatus();
+            };
+            this.socket.onclose = ()=>{
+                this.responseMessage += "✘ " + this.serverAddr+" 连接断开\n";
+                this.socket = null;
+                setTimeout(()=>{
+                    this.connect();
+                },2000);
+            };
+            this.socket.onmessage = (event)=>{
+                var message = event.data;
+                var messageObj = JSON.parse(message);
+                
+                console.log(messageObj);
+                if(messageObj.ErrCode != 0){
+                    this.responseMessage += "✘ " + messageObj.Data + "\n";
+                    return ;
+                }
+                switch(messageObj.Type){
+                    case 1:
+                        this.responseMessage += "✔ " + messageObj.Data + "\n";
+                        setTimeout(() => {
+                            this.getServerStatus();
+                        }, 2000);
+                    break
+                    case 2:
+                        this.responseMessage += "✔ 消费成功，消息内容 : " + messageObj.Data + "\n";
+                        this.getServerStatus();
+                    break
+                    case 3:
+                        this.responseMessage += "✔ 话题创建成功 : " + messageObj.Data + "\n";
+                        this.getServerStatus();
+                    break
+                    case 7:
+                        this.responseMessage += "✔ 消费者组创建成功 : " + messageObj.Data + "\n";
+                        this.getServerStatus();
+                    break
+                    case 11:
+                        var dataNew = JSON.parse(messageObj.Data);
+                        this.serverList = dataNew;
+                    default:
+                }
+            };
+            this.socket.onerror = (error)=>{
+                this.responseMessage += "✘ " + this.serverAddr+" 连接失败\n";
+                this.socket = null;
+            };
+        },
+        getServerStatus:function(){
+            console.log("getServerStatus");
+            this.sendMessage({Action:11});
+        },
+        sendMessage:function(msg){
+            if(typeof msg != "string"){
+                msg = JSON.stringify(msg);
+            }
+            if(this.socket != null){
+                this.socket.send(msg);
+            }else{
+                this.responseMessage += "☹ 请先连接服务器\n";
+            }
+        },
+        submitMessage : function(){
+            this.sendMessage(this.defaultMessage);
+            this.defaultMessage = "";
+        },
+        quickMessage : function(tp){
+            switch(tp){
+                case 1:
+                    this.defaultMessage = '{"Action":1, "Topic":"default", "Data":"hello world"}';
+                break;
+                case 2:
+                    this.defaultMessage = '{"Action":2, "Topic":"default", "ConsumerGroup":"default"}';
+                break;
+                case 3:
+                    this.defaultMessage = '{"Action":3, "Topic":"test"}';
+                break;
+                case 7:
+                    this.defaultMessage = '{"Action":7, "Topic":"default",  "ConsumerGroup":"consumer01"}';
+                break;
+            }
+        }
+    },
+    watch:{
+        responseMessage : function(newVal, oldVal){
+            textArea = document.getElementById('result');
+            textArea.scrollTop = textArea.scrollHeight + 100;
+        }
+    }
+}).mount('#app')
+</script>
+</body>
+</html>
