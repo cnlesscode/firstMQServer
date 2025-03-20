@@ -143,7 +143,6 @@ func Response(message *ReceiveMessage) []byte {
 		// 话题列表
 		// 1. 消费者组信息
 		// 2. 存储索引信息
-		// 3. 服务器 cpu 使用情况
 		data := make(map[string]map[string]any)
 		topics := kernel.TopicList
 		for k := range topics {
@@ -175,11 +174,10 @@ func Response(message *ReceiveMessage) []byte {
 		}
 		returnData := make(map[string]map[string]any, 0)
 		for _, node := range nodes {
-			conn, err := net.DialTimeout("tcp", node.Addr, time.Second*5)
+			conn, err := net.DialTimeout("tcp", node, time.Second*5)
 			if err != nil {
 				continue
 			}
-			defer conn.Close()
 			message := kernel.SendMessageStruct{
 				Action: 12,
 			}
@@ -189,7 +187,7 @@ func Response(message *ReceiveMessage) []byte {
 			}
 			resFormat := make(map[string]any)
 			json.Unmarshal([]byte(res.Data), &resFormat)
-			returnData[node.Addr] = resFormat
+			returnData[node] = resFormat
 		}
 		dataByte, err := json.Marshal(returnData)
 		if err != nil {

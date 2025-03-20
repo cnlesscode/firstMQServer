@@ -131,7 +131,7 @@ const { createApp, ref } = Vue;
 createApp({
     data:function(){
         return {
-            serverAddr : "192.168.31.100:8802",
+            serverAddr : "192.168.0.188:8802",
             responseMessage : "",
             socket : null,
             serverList : null,
@@ -165,8 +165,6 @@ createApp({
             this.socket.onmessage = (event)=>{
                 var message = event.data;
                 var messageObj = JSON.parse(message);
-                
-                console.log(messageObj);
                 if(messageObj.ErrCode != 0){
                     this.responseMessage += "✘ " + messageObj.Data + "\n";
                     return ;
@@ -174,7 +172,7 @@ createApp({
                 switch(messageObj.Type){
                     case 1:
                         this.responseMessage += "✔ " + messageObj.Data + "\n";
-                        setTimeout(() => {
+                        setTimeout(()=>{
                             this.getServerStatus();
                         }, 2000);
                     break
@@ -202,7 +200,6 @@ createApp({
             };
         },
         getServerStatus:function(){
-            console.log("getServerStatus");
             this.sendMessage({Action:11});
         },
         sendMessage:function(msg){

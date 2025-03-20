@@ -19,7 +19,7 @@ func CreateTopicForClusters(topicName string) error {
 	}
 	// 通知集群节点添加消费组
 	for _, node := range nodes {
-		conn, err := net.DialTimeout("tcp", node.Addr, time.Second*5)
+		conn, err := net.DialTimeout("tcp", node, time.Second*5)
 		if err != nil {
 			continue
 		}
@@ -42,7 +42,7 @@ func CreateConsumeGroupForClusters(topicName, consumerGroup string) error {
 	}
 	// 通知集群节点添加消费组
 	for _, node := range nodes {
-		conn, err := net.DialTimeout("tcp", node.Addr, time.Second*5)
+		conn, err := net.DialTimeout("tcp", node, time.Second*5)
 		if err != nil {
 			continue
 		}
@@ -58,26 +58,29 @@ func CreateConsumeGroupForClusters(topicName, consumerGroup string) error {
 }
 
 // 获取集群服务器列表
-func GetClusterNodes() (firstKV.FirstMQAddrs, error) {
-	nodes := firstKV.FirstMQAddrs{}
+func GetClusterNodes() (map[string]string, error) {
+	nodes := make(map[string]string, 0)
 	conn, err := net.DialTimeout("tcp", config.MasterIP+":"+config.FirstKVConfig.Port, time.Second*5)
 	if err != nil {
 		return nodes, err
 	}
 	defer conn.Close()
 	message := firstKV.ReceiveMessage{
-		Action: "get mqServers",
-		Key:    "firstMQServers",
-		Data:   firstKV.FirstMQAddr{},
+		Action:  "get",
+		MainKey: "firstMQServers",
 	}
+
 	response, err := firstKV.Send(conn, message)
 	if err != nil {
 		return nodes, err
 	}
-
-	err = json.Unmarshal([]byte(response.Data), &nodes)
+	responseData := make(map[string]firstKV.Item)
+	err = json.Unmarshal([]byte(response.Data), &responseData)
 	if err != nil {
 		return nodes, err
+	}
+	for k := range responseData {
+		nodes[k] = k
 	}
 	return nodes, nil
 }

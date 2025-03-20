@@ -39,13 +39,12 @@ func RegisterFirstMQService() {
 		}
 	}
 	msg := firstKV.ReceiveMessage{
-		Action: "add mqServer",
-		Key:    "firstMQServers",
-		Data: firstKV.FirstMQAddr{
-			Host:     config.CurrentIP,
-			Port:     config.FirstMQConfig.TCPPort,
-			Addr:     config.CurrentIP + ":" + config.FirstMQConfig.TCPPort,
-			JoinTime: time.Now().Format("2006-01-02 15:04:05"),
+		Action:  "set",
+		MainKey: "firstMQServers",
+		ItemKey: config.CurrentIP + ":" + config.FirstMQConfig.TCPPort,
+		Data: firstKV.Item{
+			ExpirationTime: -1,
+			Data:           config.CurrentIP + ":" + config.FirstMQConfig.TCPPort,
 		},
 	}
 	_, err = firstKV.Send(firstKVConn, msg)

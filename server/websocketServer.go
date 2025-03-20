@@ -75,7 +75,7 @@ func StartWSServer() {
 	})
 
 	// 启动服务
-	log.Println("✔ FirstMQ : WS服务" + config.FirstMQConfig.HTTPPort + "启动")
+	log.Println("✔ FirstMQ : 服务" + "启动成功，端口:" + config.FirstMQConfig.HTTPPort)
 	ge.Run(":" + config.FirstMQConfig.HTTPPort)
 
 }

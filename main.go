@@ -12,9 +12,6 @@ import (
 	"github.com/cnlesscode/firstMQServer/server"
 )
 
-/*
-进度 : 测试文本及结构体记录
-*/
 func main() {
 	if config.RunMode == "debug" {
 		go func() {
@@ -27,11 +24,11 @@ func main() {
 		}()
 	}
 
-	log.Println("✔ 当前服务器IP : " + config.CurrentIP)
+	log.Println("当前服务器IP:" + config.CurrentIP)
 
 	// 启动 firstKV 服务器
 	if config.CurrentIP == config.MasterIP || config.MasterIP == "" {
-		log.Println("✔ FirstKV : 当前为Master主机, 启动FirstKV服务")
+		log.Println("当前为Master主机, 启动FirstKV服务")
 		go func() {
 			firstKV.StartServer(config.FirstKVConfig.Port, config.FirstKVConfig.DataDir)
 		}()

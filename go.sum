@@ -6,8 +6,8 @@ github.com/cloudwego/base64x v0.1.4 h1:jwCgWpFanWmN8xoIUHa2rtzmkd5J2plF/dnLS6Xd/
 github.com/cloudwego/base64x v0.1.4/go.mod h1:0zlkT4Wn5C6NdauXdJRhSKRlJvmclQ1hhJgA0rcu/8w=
 github.com/cloudwego/iasm v0.2.0 h1:1KNIy1I1H9hNNFEEH3DVnI4UujN+1zjpuk6gwHLTssg=
 github.com/cloudwego/iasm v0.2.0/go.mod h1:8rXZaNYT2n95jn+zTI1sDr+IgcD2GVs0nlbbQPiEFhY=
-github.com/cnlesscode/firstKV v1.0.8 h1:SIpxAC4AQeGLgdlINIkwF0BiJRzPda+rNToW8Wy4fEc=
-github.com/cnlesscode/firstKV v1.0.8/go.mod h1:61y7Y55RbRqjjcTlbSUjvgBj1jslbd7ohUuZ4PW4ZfY=
+github.com/cnlesscode/firstKV v1.1.1 h1:fLOlZ+/UTm9DwKkPOVR+GWWKqK0euml1tO4Ek/Rkhhc=
+github.com/cnlesscode/firstKV v1.1.1/go.mod h1:61y7Y55RbRqjjcTlbSUjvgBj1jslbd7ohUuZ4PW4ZfY=
 github.com/cnlesscode/gotool v0.0.3 h1:ZVBy0uEOvKQeS57APOiJAWHg1V7dztY1iU/HwIv5hzE=
 github.com/cnlesscode/gotool v0.0.3/go.mod h1:KQhP9OZRzebXFDa2SJBsxcenNcIjJ7562rCs4HQMvJk=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
