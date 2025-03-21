@@ -47,7 +47,7 @@ func RegisterFirstMQService() {
 			Data:           config.CurrentIP + ":" + config.FirstMQConfig.TCPPort,
 		},
 	}
-	_, err = firstKV.Send(firstKVConn, msg)
+	_, err = firstKV.Send(firstKVConn, msg, true)
 	if err != nil {
 		log.Println("向 firstKV 注册服务失败")
 	}

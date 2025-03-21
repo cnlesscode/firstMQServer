@@ -40,7 +40,7 @@ type FirstMQConfigStruct struct {
 	// 服务监听端口
 	TCPPort string
 	// HTTP服务端口
-	HTTPPort string
+	WebSocketPort string
 	// 生产消息临时管道缓存长度
 	ChannelCapactiyForProduct int
 	// 落盘时每次最多读取数据数量
@@ -85,7 +85,7 @@ func init() {
 	FirstMQConfig.DataDir = GlobalDataDir + iniReader.String("FirstMQ", "DataDir")
 	FirstMQConfig.NumberOfFragmented = iniReader.Int64("FirstMQ", "NumberOfFragmented")
 	FirstMQConfig.TCPPort = iniReader.String("FirstMQ", "TCPPort")
-	FirstMQConfig.HTTPPort = iniReader.String("FirstMQ", "HTTPPort")
+	FirstMQConfig.WebSocketPort = iniReader.String("FirstMQ", "WebSocketPort")
 	FirstMQConfig.ChannelCapactiyForProduct = iniReader.Int("FirstMQ", "ChannelCapactiyForProduct")
 	FirstMQConfig.MaxNumberForRepaireToDisk = iniReader.Int64("FirstMQ", "MaxNumberForRepaireToDisk")
 	FirstMQConfig.FillNumberEachTime = iniReader.Int64("FirstMQ", "FillNumberEachTime")

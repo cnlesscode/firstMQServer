@@ -1,6 +1,7 @@
 package server
 
 import (
+	"log"
 	"net"
 
 	"github.com/cnlesscode/firstMQServer/config"
@@ -66,5 +67,6 @@ func StartFirstMQTcpServer() {
 	kernel.LoadTopics()
 	// 3. 启动 FirstMQ TCP 服务
 	tcpServer := NewTCPServer(":" + config.FirstMQConfig.TCPPort)
+	log.Println("✔ FirstMQ : 服务" + "启动成功，端口:" + config.FirstMQConfig.TCPPort)
 	tcpServer.Accept()
 }

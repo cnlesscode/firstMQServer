@@ -70,7 +70,7 @@ func GetClusterNodes() (map[string]string, error) {
 		MainKey: "firstMQServers",
 	}
 
-	response, err := firstKV.Send(conn, message)
+	response, err := firstKV.Send(conn, message, true)
 	if err != nil {
 		return nodes, err
 	}
