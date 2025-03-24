@@ -41,10 +41,10 @@ func RegisterFirstMQService() {
 	msg := firstKV.ReceiveMessage{
 		Action:  "set",
 		MainKey: "firstMQServers",
-		ItemKey: config.CurrentIP + ":" + config.FirstMQConfig.TCPPort,
+		ItemKey: config.CurrentIP + ":" + config.FirstMQConfig.Port,
 		Data: firstKV.Item{
 			ExpirationTime: -1,
-			Data:           config.CurrentIP + ":" + config.FirstMQConfig.TCPPort,
+			Data:           config.CurrentIP + ":" + config.FirstMQConfig.Port,
 		},
 	}
 	_, err = firstKV.Send(firstKVConn, msg, true)

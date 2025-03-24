@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os"
 	"path"
 	"time"
@@ -32,9 +31,9 @@ type FirstMQConfigStruct struct {
 	DataDir string
 	// 每个分片存储数据条目数
 	NumberOfFragmented int64
-	// 服务监听端口
-	TCPPort string
-	// HTTP服务端口
+	// 主服务监听端口
+	Port string
+	// WebSocket 服务端口
 	WebSocketPort string
 	// 生产消息临时管道缓存长度
 	ChannelCapactiyForProduct int
@@ -45,7 +44,7 @@ type FirstMQConfigStruct struct {
 	// 落盘时空闲休眠时间
 	IdleSleepTimeForWrite time.Duration
 	// 填充消费消息时空闲休眠时间
-	IdleSleepTimeForRead time.Duration
+	IdleSleepTimeForFillMessage time.Duration
 }
 
 var FirstMQConfig = &FirstMQConfigStruct{}
@@ -62,7 +61,6 @@ func init() {
 
 	// 2. 全局数据目录，以系统分隔符结尾
 	GlobalDataDir = path.Join(gotool.Root, iniReader.String("", "GlobalDataDirName"))
-	fmt.Printf("GlobalDataDir: %v\n", GlobalDataDir)
 	// 2.1 检查全局数据目录
 	if !gfs.DirExists(GlobalDataDir) {
 		err := os.Mkdir(GlobalDataDir, 0777)
@@ -74,18 +72,18 @@ func init() {
 	// 3. FirstKV 服务地址
 	FirstKVConfig.Host = iniReader.String("FirstKV", "Host")
 	FirstKVConfig.Port = iniReader.String("FirstKV", "Port")
-	FirstKVConfig.DataLogsDir = path.Join(GlobalDataDir, iniReader.String("FirstKV", "DataLogsDir"))
+	FirstKVConfig.DataLogsDir = path.Join(GlobalDataDir, iniReader.String("FirstKV", "DataLogsDirName"))
 	FirstKVConfig.Enable = iniReader.String("FirstKV", "Enable")
 
 	// 4. FirstMQ 服务配置
-	FirstMQConfig.DataDir = path.Join(GlobalDataDir, iniReader.String("FirstMQ", "DataDir"))
+	FirstMQConfig.DataDir = path.Join(GlobalDataDir, iniReader.String("FirstMQ", "DataLogsDirName"))
 	FirstMQConfig.NumberOfFragmented = iniReader.Int64("FirstMQ", "NumberOfFragmented")
-	FirstMQConfig.TCPPort = iniReader.String("FirstMQ", "TCPPort")
+	FirstMQConfig.Port = iniReader.String("FirstMQ", "Port")
 	FirstMQConfig.WebSocketPort = iniReader.String("FirstMQ", "WebSocketPort")
 	FirstMQConfig.ChannelCapactiyForProduct = iniReader.Int("FirstMQ", "ChannelCapactiyForProduct")
 	FirstMQConfig.MaxNumberForRepaireToDisk = iniReader.Int64("FirstMQ", "MaxNumberForRepaireToDisk")
 	FirstMQConfig.FillNumberEachTime = iniReader.Int64("FirstMQ", "FillNumberEachTime")
 	FirstMQConfig.IdleSleepTimeForWrite = time.Duration(iniReader.Int("FirstMQ", "IdleSleepTimeForWrite")) * time.Millisecond
-	FirstMQConfig.IdleSleepTimeForRead = time.Duration(iniReader.Int("FirstMQ", "IdleSleepTimeForRead")) * time.Millisecond
+	FirstMQConfig.IdleSleepTimeForFillMessage = time.Duration(iniReader.Int("FirstMQ", "IdleSleepTimeForFillMessage")) * time.Millisecond
 
 }

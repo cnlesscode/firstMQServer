@@ -55,8 +55,7 @@ func CreateConsumerGroup(topicName, consumerGroup string) error {
 		return nil
 	}
 	// 消费索引
-	dir, fName := InitConsumeIndexFilePath(topicName, consumerGroup)
-	consumeIndexFilePath := dir + fName
+	consumeIndexFilePath := InitConsumeIndexFilePath(topicName, consumerGroup)
 	if gfs.FileExists(consumeIndexFilePath) {
 		return nil
 	}
@@ -78,7 +77,8 @@ func CreateConsumerGroup(topicName, consumerGroup string) error {
 		FillIndex:            0,
 		ConsumeIndex:         0,
 	}
-	// FillMessages 填充消息同时会开启消费索引保存功能 ( 一个子协程 )
+	// FillMessages 填充消息
+	// 同时会开启消费索引保存功能 ( 一个子协程 )
 	ConsumeMessageChannels[consumeIndexMapKey].FillMessages()
 	return nil
 }

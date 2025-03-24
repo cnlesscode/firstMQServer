@@ -3,20 +3,18 @@ package kernel
 import (
 	"encoding/binary"
 	"os"
+	"path"
 	"strings"
 	"time"
 
 	"github.com/cnlesscode/firstMQServer/config"
-	"github.com/cnlesscode/gotool"
 )
 
 // 填充全部消费队列
-func FillMessagesToConsumeChannel(topicName string) {
+func FillMessagesToConsumeChannel() {
 	// 获取消费者组
 	for topicName := range TopicList {
-		baseDataDir := config.FirstMQConfig.DataDir + gotool.SystemSeparator +
-			topicName + gotool.SystemSeparator +
-			"consume_logs" + gotool.SystemSeparator
+		baseDataDir := path.Join(config.FirstMQConfig.DataDir, topicName, "consume_logs")
 		// 查询消费者组
 		fileList, err := os.ReadDir(baseDataDir)
 		if err != nil {
@@ -30,8 +28,7 @@ func FillMessagesToConsumeChannel(topicName string) {
 				_, ok := ConsumeMessageChannels[key]
 				if !ok {
 					// 索引文件
-					dir, fName := InitConsumeIndexFilePath(topicName, fileName)
-					consumeIndexFilePath := dir + fName
+					consumeIndexFilePath := InitConsumeIndexFilePath(topicName, fileName)
 					ConsumeMessageChannels[key] = &ConsumeMessagesChannel{
 						TopicName:            topicName,
 						ConsumerGroup:        fileName,
@@ -66,8 +63,7 @@ func (m *ConsumeMessagesChannel) FillMessages() {
 				mIn.FillIndex,
 				config.FirstMQConfig.FillNumberEachTime)
 			if err != nil {
-				// 测试分片消费 及 计算获取消息的开销
-				time.Sleep(config.FirstMQConfig.IdleSleepTimeForRead)
+				time.Sleep(config.FirstMQConfig.IdleSleepTimeForFillMessage)
 				continue
 			}
 			// 将消息填充到消费者消息缓存通道

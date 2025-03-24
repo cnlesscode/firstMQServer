@@ -18,8 +18,8 @@ func main() {
 			for {
 				time.Sleep(time.Second * 5)
 				fmt.Printf("协程数 : %v\n", runtime.NumGoroutine())
-				fmt.Printf("cap(kernel.MessageChannels[\"default\"]): %v\n", cap(kernel.MessageChannels["test"]))
-				fmt.Printf("len(kernel.MessageChannels[\"default\"]): %v\n", len(kernel.MessageChannels["test"]))
+				fmt.Printf("cap(kernel.MessageChannels[\"test\"]): %v\n", cap(kernel.MessageChannels["test"]))
+				fmt.Printf("len(kernel.MessageChannels[\"test\"]): %v\n", len(kernel.MessageChannels["test"]))
 			}
 		}()
 	}

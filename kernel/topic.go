@@ -3,13 +3,12 @@ package kernel
 import (
 	"encoding/binary"
 	"errors"
-	"fmt"
 	"log"
 	"os"
+	"path"
 	"regexp"
 
 	"github.com/cnlesscode/firstMQServer/config"
-	"github.com/cnlesscode/gotool"
 	"github.com/cnlesscode/gotool/gfs"
 )
 
@@ -28,7 +27,7 @@ func GetTopicList() []string {
 // 载入话题
 func LoadTopics() {
 	// 以数据文件夹为基础初始化话题管道
-	fmt.Printf("config.FirstMQConfig.DataDir: %v\n", config.FirstMQConfig.DataDir)
+	// GlobalDataDir
 	list, err := os.ReadDir(config.FirstMQConfig.DataDir)
 	if err != nil {
 		err = os.Mkdir(config.FirstMQConfig.DataDir, 0777)
@@ -57,18 +56,19 @@ func LoadTopics() {
 		MessageChannels[topicName] = make(chan []byte, config.FirstMQConfig.ChannelCapactiyForProduct)
 		// 1. 启动落盘函数
 		go SaveMessageToDisk(topicName)
-		// 2. 启动消费消息缓冲管道填充
-		// 2.1 遍历消费者组循环填充
-		// 2.2 同时开启消费索引保存功能
-		FillMessagesToConsumeChannel(topicName)
 	}
+
+	// 启动消费消息缓冲管道填充
+	// 1 遍历消费者组循环填充
+	// 2 同时开启消费索引保存功能
+	FillMessagesToConsumeChannel()
+
 	// 记录日志
 	log.Println("✔ FirstMQ : 话题初始化成功")
 }
 
 // 创建话题
 func CreateTopic(topicName string) error {
-	log.Println("✔ FirstMQ : 创建话题 : " + topicName)
 	err := CreateTopicFiles(topicName)
 	if err != nil {
 		return err
@@ -105,7 +105,10 @@ func CreateTopicFiles(topicName string) error {
 	if err != nil {
 		return err
 	}
-	topicDataDir := config.FirstMQConfig.DataDir + gotool.SystemSeparator + topicName
+	topicDataDir := path.Join(
+		config.FirstMQConfig.DataDir,
+		topicName,
+	)
 	// 已经存在的话题
 	if gfs.DirExists(topicDataDir) {
 		return errors.New("话题已存在")
@@ -125,13 +128,19 @@ func CreateTopicFiles(topicName string) error {
 	}
 
 	// 3. 创建话题数据目录
-	err = os.Mkdir(topicDataDir+gotool.SystemSeparator+"data_logs", 0777)
+	err = os.Mkdir(
+		path.Join(topicDataDir, "data_logs"),
+		0777,
+	)
 	if err != nil {
 		return err
 	}
 
 	// 4. 创建存储索引记录文件
-	f, err := os.OpenFile(topicDataDir+gotool.SystemSeparator+"save_index.bin", os.O_RDWR|os.O_CREATE, 0777)
+	f, err := os.OpenFile(
+		path.Join(topicDataDir, "save_index.bin"),
+		os.O_RDWR|os.O_CREATE, 0777,
+	)
 	if err != nil {
 		return err
 	}
@@ -143,7 +152,10 @@ func CreateTopicFiles(topicName string) error {
 	f.Close()
 
 	// 5. 创建消费索引目录
-	err = os.Mkdir(topicDataDir+gotool.SystemSeparator+"consume_logs", 0777)
+	err = os.Mkdir(
+		path.Join(topicDataDir, "consume_logs"),
+		0777,
+	)
 	if err != nil {
 		return err
 	}

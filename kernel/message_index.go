@@ -3,16 +3,20 @@ package kernel
 import (
 	"encoding/binary"
 	"os"
+	"path"
 	"strconv"
 	"time"
 
 	"github.com/cnlesscode/firstMQServer/config"
-	"github.com/cnlesscode/gotool"
 )
 
 // 读取存储索引 [ 当前存储最大值 - 整数 ]
 func GetSaveIndex(topicName string) (int64, error) {
-	saveIndexFilePath := config.FirstMQConfig.DataDir + gotool.SystemSeparator + topicName + gotool.SystemSeparator + "save_index.bin"
+	saveIndexFilePath := path.Join(
+		config.FirstMQConfig.DataDir,
+		topicName,
+		"save_index.bin",
+	)
 	f, err := os.OpenFile(saveIndexFilePath, os.O_RDONLY, 0777)
 	if err != nil {
 		return 0, err
@@ -32,20 +36,32 @@ func InitConsumeIndexMapKey(topicName, consumerGroup string) string {
 }
 
 // 整合消费索引文件路径
-func InitConsumeIndexFilePath(topicName, consumerGroup string) (string, string) {
-	baseDataDir := config.FirstMQConfig.DataDir + gotool.SystemSeparator +
-		topicName + gotool.SystemSeparator +
-		"consume_logs" + gotool.SystemSeparator
-	filePath := consumerGroup
-	return baseDataDir, filePath
+func InitConsumeIndexFilePath(topicName, consumerGroup string) string {
+	baseDataDir := path.Join(
+		config.FirstMQConfig.DataDir,
+		topicName,
+		"consume_logs",
+	)
+	return path.Join(baseDataDir, consumerGroup)
 }
 
 // 整合消息数据文件路径
 // 返回 : 日志文件路径, 消息索引文件路径, 日志文件所在目录
 func InitLogFiles(topicName string, fileIdx int64) (string, string) {
-	baseDataDir := config.FirstMQConfig.DataDir + gotool.SystemSeparator + topicName + gotool.SystemSeparator
-	logfilePath := baseDataDir + "data_logs" + gotool.SystemSeparator + strconv.FormatInt(fileIdx, 10) + ".log"
-	idxFilePath := baseDataDir + "data_logs" + gotool.SystemSeparator + strconv.FormatInt(fileIdx, 10) + ".bin"
+	baseDataDir := path.Join(
+		config.FirstMQConfig.DataDir,
+		topicName,
+	)
+	logfilePath := path.Join(
+		baseDataDir,
+		"data_logs",
+		strconv.FormatInt(fileIdx, 10)+".log",
+	)
+	idxFilePath := path.Join(
+		baseDataDir,
+		"data_logs",
+		strconv.FormatInt(fileIdx, 10)+".bin",
+	)
 	return logfilePath, idxFilePath
 }
 

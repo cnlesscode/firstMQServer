@@ -66,7 +66,7 @@ func StartFirstMQTcpServer() {
 	// 2. 初始化 FirstMQ 话题
 	kernel.LoadTopics()
 	// 3. 启动 FirstMQ TCP 服务
-	tcpServer := NewTCPServer(":" + config.FirstMQConfig.TCPPort)
-	log.Println("✔ FirstMQ : 服务" + "启动成功，端口:" + config.FirstMQConfig.TCPPort)
+	tcpServer := NewTCPServer(":" + config.FirstMQConfig.Port)
+	log.Println("✔ FirstMQ : 服务" + "启动成功，端口:" + config.FirstMQConfig.Port)
 	tcpServer.Accept()
 }

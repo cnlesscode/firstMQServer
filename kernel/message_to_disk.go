@@ -4,15 +4,15 @@ import (
 	"encoding/binary"
 	"log"
 	"os"
+	"path"
 	"time"
 
 	"github.com/cnlesscode/firstMQServer/config"
-	"github.com/cnlesscode/gotool"
 )
 
 // 落盘函数
 func SaveMessageToDisk(topicName string) {
-	log.Println("✔ FirstMQ : 开始落盘" + topicName)
+	log.Println("✔ FirstMQ : 开始落盘，话题:" + topicName)
 SaveMessageToDiskStart:
 	// 遍历话题内消息
 	var messageCount int64 = 0
@@ -44,7 +44,11 @@ SaveMessageToDiskStart:
 		}
 	}
 	// 获取存储索引
-	saveIndexFilePath := config.FirstMQConfig.DataDir + gotool.SystemSeparator + topicName + gotool.SystemSeparator + "save_index.bin"
+	saveIndexFilePath := path.Join(
+		config.FirstMQConfig.DataDir,
+		topicName,
+		"save_index.bin",
+	)
 	saveIndex, err := GetSaveIndex(topicName)
 	if err != nil {
 		SaveMessageToDiskFailed(topicName, messageSlice)
