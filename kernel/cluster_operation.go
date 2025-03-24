@@ -60,7 +60,11 @@ func CreateConsumeGroupForClusters(topicName, consumerGroup string) error {
 // 获取集群服务器列表
 func GetClusterNodes() (map[string]string, error) {
 	nodes := make(map[string]string, 0)
-	conn, err := net.DialTimeout("tcp", config.MasterIP+":"+config.FirstKVConfig.Port, time.Second*5)
+	conn, err := net.DialTimeout(
+		"tcp",
+		config.FirstKVConfig.Host+":"+config.FirstKVConfig.Port,
+		time.Second*5,
+	)
 	if err != nil {
 		return nodes, err
 	}
@@ -69,7 +73,6 @@ func GetClusterNodes() (map[string]string, error) {
 		Action:  "get",
 		MainKey: "firstMQServers",
 	}
-
 	response, err := firstKV.Send(conn, message, true)
 	if err != nil {
 		return nodes, err

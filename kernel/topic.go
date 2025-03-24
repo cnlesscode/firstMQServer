@@ -3,6 +3,7 @@ package kernel
 import (
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -27,6 +28,7 @@ func GetTopicList() []string {
 // 载入话题
 func LoadTopics() {
 	// 以数据文件夹为基础初始化话题管道
+	fmt.Printf("config.FirstMQConfig.DataDir: %v\n", config.FirstMQConfig.DataDir)
 	list, err := os.ReadDir(config.FirstMQConfig.DataDir)
 	if err != nil {
 		err = os.Mkdir(config.FirstMQConfig.DataDir, 0777)

@@ -27,12 +27,10 @@ func main() {
 	log.Println("当前服务器IP:" + config.CurrentIP)
 
 	// 启动 firstKV 服务器
-	if config.CurrentIP == config.MasterIP || config.MasterIP == "" {
-		log.Println("当前为Master主机, 启动FirstKV服务")
-		go func() {
-			firstKV.StartServer(config.FirstKVConfig.Port, config.FirstKVConfig.DataDir)
-		}()
-	}
+	// 开启条件 : config.FirstKVConfig.Enable == "on"
+	go func() {
+		firstKV.StartServer(config.FirstKVConfig)
+	}()
 
 	// 开启 WS 服务
 	go func() {

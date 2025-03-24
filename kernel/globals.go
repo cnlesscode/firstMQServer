@@ -25,7 +25,7 @@ func RegisterFirstMQService() {
 	for {
 		firstKVConn, err = net.DialTimeout(
 			"tcp",
-			config.MasterIP+":"+config.FirstKVConfig.Port,
+			config.FirstKVConfig.Host+":"+config.FirstKVConfig.Port,
 			time.Millisecond*500,
 		)
 		if err != nil {

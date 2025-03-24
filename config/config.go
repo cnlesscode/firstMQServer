@@ -1,9 +1,12 @@
 package config
 
 import (
+	"fmt"
 	"os"
+	"path"
 	"time"
 
+	"github.com/cnlesscode/firstKV"
 	"github.com/cnlesscode/gotool"
 	"github.com/cnlesscode/gotool/gfs"
 	"github.com/cnlesscode/gotool/iniReader"
@@ -18,18 +21,10 @@ var GlobalDataDir string
 // 当前服务器内网IP
 var CurrentIP string = gotool.GetLocalIP()
 
-// 主服务 IP
-var MasterIP string = ""
-
 // FirstKV配置
-type FirstKVConfigStruct struct {
-	// 数据存储目录名称
-	DataDir string
-	// 服务监听端口
-	Port string
+var FirstKVConfig = firstKV.Config{
+	Enable: "off",
 }
-
-var FirstKVConfig = &FirstKVConfigStruct{}
 
 // FirstMQ服务配置
 type FirstMQConfigStruct struct {
@@ -61,11 +56,13 @@ func init() {
 		panic("配置文件不存在")
 	}
 	iniReader := iniReader.New(configFile)
+
 	// 1. 运行模式
 	RunMode = iniReader.String("", "RunMode")
 
 	// 2. 全局数据目录，以系统分隔符结尾
-	GlobalDataDir = gotool.Root + iniReader.String("", "GlobalDataDirName") + gotool.SystemSeparator
+	GlobalDataDir = path.Join(gotool.Root, iniReader.String("", "GlobalDataDirName"))
+	fmt.Printf("GlobalDataDir: %v\n", GlobalDataDir)
 	// 2.1 检查全局数据目录
 	if !gfs.DirExists(GlobalDataDir) {
 		err := os.Mkdir(GlobalDataDir, 0777)
@@ -74,15 +71,14 @@ func init() {
 		}
 	}
 
-	// 3. 主服务器IP
-	MasterIP = iniReader.String("", "MasterIP")
-
-	// 3. FirstKV 服务配置
-	FirstKVConfig.DataDir = GlobalDataDir + iniReader.String("FirstKV", "DataDir") + gotool.SystemSeparator
+	// 3. FirstKV 服务地址
+	FirstKVConfig.Host = iniReader.String("FirstKV", "Host")
 	FirstKVConfig.Port = iniReader.String("FirstKV", "Port")
+	FirstKVConfig.DataLogsDir = path.Join(GlobalDataDir, iniReader.String("FirstKV", "DataLogsDir"))
+	FirstKVConfig.Enable = iniReader.String("FirstKV", "Enable")
 
 	// 4. FirstMQ 服务配置
-	FirstMQConfig.DataDir = GlobalDataDir + iniReader.String("FirstMQ", "DataDir")
+	FirstMQConfig.DataDir = path.Join(GlobalDataDir, iniReader.String("FirstMQ", "DataDir"))
 	FirstMQConfig.NumberOfFragmented = iniReader.Int64("FirstMQ", "NumberOfFragmented")
 	FirstMQConfig.TCPPort = iniReader.String("FirstMQ", "TCPPort")
 	FirstMQConfig.WebSocketPort = iniReader.String("FirstMQ", "WebSocketPort")
