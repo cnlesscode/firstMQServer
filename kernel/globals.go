@@ -42,10 +42,7 @@ func RegisterFirstMQService() {
 		Action:  "set",
 		MainKey: "firstMQServers",
 		ItemKey: config.CurrentIP + ":" + config.FirstMQConfig.Port,
-		Data: firstKV.Item{
-			ExpirationTime: -1,
-			Data:           config.CurrentIP + ":" + config.FirstMQConfig.Port,
-		},
+		Data:    config.CurrentIP + ":" + config.FirstMQConfig.Port,
 	}
 	_, err = firstKV.Send(firstKVConn, msg, true)
 	if err != nil {

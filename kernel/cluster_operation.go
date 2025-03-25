@@ -2,6 +2,7 @@ package kernel
 
 import (
 	"encoding/json"
+	"fmt"
 	"net"
 	"time"
 
@@ -77,8 +78,9 @@ func GetClusterNodes() (map[string]string, error) {
 	if err != nil {
 		return nodes, err
 	}
-	responseData := make(map[string]firstKV.Item)
-	err = json.Unmarshal([]byte(response.Data), &responseData)
+	responseData := make(map[string]any)
+	err = json.Unmarshal([]byte(response.Data.(string)), &responseData)
+	fmt.Printf("responseData: %v\n", responseData)
 	if err != nil {
 		return nodes, err
 	}
