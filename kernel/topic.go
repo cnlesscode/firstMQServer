@@ -8,7 +8,7 @@ import (
 	"path"
 	"regexp"
 
-	"github.com/cnlesscode/firstMQServer/config"
+	"github.com/cnlesscode/firstMQServer/configs"
 	"github.com/cnlesscode/gotool/gfs"
 )
 
@@ -28,13 +28,13 @@ func GetTopicList() []string {
 func LoadTopics() {
 	// 以数据文件夹为基础初始化话题管道
 	// GlobalDataDir
-	list, err := os.ReadDir(config.FirstMQConfig.DataDir)
+	list, err := os.ReadDir(configs.FirstMQConfig.DataDir)
 	if err != nil {
-		err = os.Mkdir(config.FirstMQConfig.DataDir, 0777)
+		err = os.Mkdir(configs.FirstMQConfig.DataDir, 0777)
 		if err != nil {
 			panic("✘ 话题数据文件夹创建失败！")
 		}
-		list, err = os.ReadDir(config.FirstMQConfig.DataDir)
+		list, err = os.ReadDir(configs.FirstMQConfig.DataDir)
 		if err != nil {
 			panic("✘ 话题数据文件夹初始化失败！")
 		}
@@ -53,7 +53,7 @@ func LoadTopics() {
 		if _, ok := MessageChannels[topicName]; ok {
 			continue
 		}
-		MessageChannels[topicName] = make(chan []byte, config.FirstMQConfig.ChannelCapactiyForProduct)
+		MessageChannels[topicName] = make(chan []byte, configs.FirstMQConfig.ChannelCapactiyForProduct)
 		// 1. 启动落盘函数
 		go SaveMessageToDisk(topicName)
 	}
@@ -74,7 +74,7 @@ func CreateTopic(topicName string) error {
 		return err
 	}
 	// 动态添加话题数据通道
-	MessageChannels[topicName] = make(chan []byte, config.FirstMQConfig.ChannelCapactiyForProduct)
+	MessageChannels[topicName] = make(chan []byte, configs.FirstMQConfig.ChannelCapactiyForProduct)
 	// 动态添加话题列表数据
 	TopicList[topicName] = 1
 	// 创建消费者组
@@ -106,7 +106,7 @@ func CreateTopicFiles(topicName string) error {
 		return err
 	}
 	topicDataDir := path.Join(
-		config.FirstMQConfig.DataDir,
+		configs.FirstMQConfig.DataDir,
 		topicName,
 	)
 	// 已经存在的话题
@@ -114,8 +114,8 @@ func CreateTopicFiles(topicName string) error {
 		return errors.New("话题已存在")
 	}
 	// 1. 创建落盘文件夹
-	if !gfs.DirExists(config.FirstMQConfig.DataDir) {
-		err := os.Mkdir(config.FirstMQConfig.DataDir, 0777)
+	if !gfs.DirExists(configs.FirstMQConfig.DataDir) {
+		err := os.Mkdir(configs.FirstMQConfig.DataDir, 0777)
 		if err != nil {
 			return err
 		}

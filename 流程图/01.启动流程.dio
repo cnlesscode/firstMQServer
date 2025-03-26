@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="5vMIrCGlaVTDwDNxmCuT" name="第 1 页">
-        <mxGraphModel dx="1719" dy="997" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="1559" dy="694" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -21,7 +21,7 @@
                 <mxCell id="23" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontColor=#000000;" parent="1" source="11" target="15" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="103" value="" style="edgeStyle=none;html=1;fontSize=16;" edge="1" parent="1" source="11" target="19">
+                <mxCell id="103" value="" style="edgeStyle=none;html=1;fontSize=16;" parent="1" source="11" target="19" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="11" value="初始化话题" style="rhombus;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;rounded=1;fontStyle=0;fontSize=16;" parent="1" vertex="1">
@@ -89,8 +89,8 @@
                 <mxCell id="100" value="" style="edgeStyle=none;html=1;" parent="1" source="35" target="37" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="35" value="初始化&lt;br style=&quot;font-size: 16px;&quot;&gt;firstKV服务" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;rounded=1;fontSize=16;" parent="1" vertex="1">
-                    <mxGeometry x="316" y="271" width="168" height="100" as="geometry"/>
+                <mxCell id="35" value="初始化&lt;br style=&quot;font-size: 16px;&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;ServerFinder&amp;nbsp;&lt;/span&gt;服务" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;rounded=1;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="271" width="200" height="100" as="geometry"/>
                 </mxCell>
                 <mxCell id="39" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="37" target="40" edge="1">
                     <mxGeometry relative="1" as="geometry">
@@ -100,14 +100,14 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="37" value="当前为主服务&lt;br style=&quot;font-size: 16px;&quot;&gt;开启 firstKV 服务" style="whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;rounded=1;fontSize=16;" parent="1" vertex="1">
+                <mxCell id="37" value="当前为主服务&lt;br style=&quot;font-size: 16px;&quot;&gt;开启 ServerFinder 服务" style="whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;rounded=1;fontSize=16;" parent="1" vertex="1">
                     <mxGeometry x="141" y="288.5" width="139" height="63" as="geometry"/>
                 </mxCell>
                 <mxCell id="42" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="40" target="11" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="40" value="向 firstKV 服务注册当前服务" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=17;" parent="1" vertex="1">
-                    <mxGeometry x="281" y="399" width="240" height="40" as="geometry"/>
+                <mxCell id="40" value="向&amp;nbsp;&lt;span style=&quot;color: rgb(0, 0, 0); font-size: 16px;&quot;&gt;ServerFinder&amp;nbsp;&lt;/span&gt;服务注册当前服务" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=17;" parent="1" vertex="1">
+                    <mxGeometry x="261.5" y="399" width="279" height="40" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>

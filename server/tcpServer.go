@@ -4,7 +4,7 @@ import (
 	"log"
 	"net"
 
-	"github.com/cnlesscode/firstMQServer/config"
+	"github.com/cnlesscode/firstMQServer/configs"
 	"github.com/cnlesscode/firstMQServer/kernel"
 	"github.com/cnlesscode/gotool"
 )
@@ -61,12 +61,12 @@ func (t *TCPServer) Handle(conn net.Conn) {
 
 // 开启 TCP 服务
 func StartFirstMQTcpServer() {
-	// 1. 注册服务到 FirstKV
+	// 1. 注册服务到 ServerFinder
 	kernel.RegisterFirstMQService()
 	// 2. 初始化 FirstMQ 话题
 	kernel.LoadTopics()
 	// 3. 启动 FirstMQ TCP 服务
-	tcpServer := NewTCPServer(":" + config.FirstMQConfig.Port)
-	log.Println("✔ FirstMQ : 服务" + "启动成功，端口:" + config.FirstMQConfig.Port)
+	tcpServer := NewTCPServer(":" + configs.FirstMQConfig.Port)
+	log.Println("✔ FirstMQ : 服务" + "启动成功，端口:" + configs.FirstMQConfig.Port)
 	tcpServer.Accept()
 }

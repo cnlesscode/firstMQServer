@@ -5,7 +5,7 @@ import (
 	"errors"
 	"os"
 
-	"github.com/cnlesscode/firstMQServer/config"
+	"github.com/cnlesscode/firstMQServer/configs"
 	"github.com/cnlesscode/gotool/gfs"
 )
 
@@ -71,7 +71,7 @@ func CreateConsumerGroup(topicName, consumerGroup string) error {
 	}
 	ConsumeMessageChannels[consumeIndexMapKey] = &ConsumeMessagesChannel{
 		TopicName:            topicName,
-		Channel:              make(chan MessageForRead, config.FirstMQConfig.FillNumberEachTime-1),
+		Channel:              make(chan MessageForRead, configs.FirstMQConfig.FillNumberEachTime-1),
 		ConsumerGroup:        consumerGroup,
 		ConsumeIndexFilePath: consumeIndexFilePath,
 		FillIndex:            0,

@@ -1,14 +1,14 @@
-package config
+package configs
 
 import (
 	"os"
 	"path"
 	"time"
 
-	"github.com/cnlesscode/firstKV"
 	"github.com/cnlesscode/gotool"
 	"github.com/cnlesscode/gotool/gfs"
 	"github.com/cnlesscode/gotool/iniReader"
+	"github.com/cnlesscode/serverFinder"
 )
 
 // 运行模式
@@ -20,8 +20,8 @@ var GlobalDataDir string
 // 当前服务器内网IP
 var CurrentIP string = gotool.GetLocalIP()
 
-// FirstKV配置
-var FirstKVConfig = firstKV.Config{
+// ServerFinder 配置
+var ServerFinderConfig = serverFinder.Config{
 	Enable: "off",
 }
 
@@ -69,11 +69,12 @@ func init() {
 		}
 	}
 
-	// 3. FirstKV 服务地址
-	FirstKVConfig.Host = iniReader.String("FirstKV", "Host")
-	FirstKVConfig.Port = iniReader.String("FirstKV", "Port")
-	FirstKVConfig.DataLogsDir = path.Join(GlobalDataDir, iniReader.String("FirstKV", "DataLogsDirName"))
-	FirstKVConfig.Enable = iniReader.String("FirstKV", "Enable")
+	// 3. ServerFinder 服务地址
+	ServerFinderConfig.Host = iniReader.String("ServerFinder", "Host")
+	ServerFinderConfig.Port = iniReader.String("ServerFinder", "Port")
+	ServerFinderConfig.ListenPort = iniReader.String("ServerFinder", "ListenInPort")
+	ServerFinderConfig.DataLogDir = path.Join(GlobalDataDir, iniReader.String("ServerFinder", "DataLogsDirName"))
+	ServerFinderConfig.Enable = iniReader.String("ServerFinder", "Enable")
 
 	// 4. FirstMQ 服务配置
 	FirstMQConfig.DataDir = path.Join(GlobalDataDir, iniReader.String("FirstMQ", "DataLogsDirName"))

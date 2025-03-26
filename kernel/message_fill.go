@@ -7,14 +7,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cnlesscode/firstMQServer/config"
+	"github.com/cnlesscode/firstMQServer/configs"
 )
 
 // 填充全部消费队列
 func FillMessagesToConsumeChannel() {
 	// 获取消费者组
 	for topicName := range TopicList {
-		baseDataDir := path.Join(config.FirstMQConfig.DataDir, topicName, "consume_logs")
+		baseDataDir := path.Join(configs.FirstMQConfig.DataDir, topicName, "consume_logs")
 		// 查询消费者组
 		fileList, err := os.ReadDir(baseDataDir)
 		if err != nil {
@@ -32,7 +32,7 @@ func FillMessagesToConsumeChannel() {
 					ConsumeMessageChannels[key] = &ConsumeMessagesChannel{
 						TopicName:            topicName,
 						ConsumerGroup:        fileName,
-						Channel:              make(chan MessageForRead, config.FirstMQConfig.FillNumberEachTime-1),
+						Channel:              make(chan MessageForRead, configs.FirstMQConfig.FillNumberEachTime-1),
 						ConsumeIndexFilePath: consumeIndexFilePath,
 					}
 					startIndex, err := ConsumeMessageChannels[key].GetConsumeIndex()
@@ -61,9 +61,9 @@ func (m *ConsumeMessagesChannel) FillMessages() {
 				mIn.TopicName,
 				mIn.ConsumerGroup,
 				mIn.FillIndex,
-				config.FirstMQConfig.FillNumberEachTime)
+				configs.FirstMQConfig.FillNumberEachTime)
 			if err != nil {
-				time.Sleep(config.FirstMQConfig.IdleSleepTimeForFillMessage)
+				time.Sleep(configs.FirstMQConfig.IdleSleepTimeForFillMessage)
 				continue
 			}
 			// 将消息填充到消费者消息缓存通道

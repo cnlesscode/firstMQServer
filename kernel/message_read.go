@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/cnlesscode/firstMQServer/config"
+	"github.com/cnlesscode/firstMQServer/configs"
 )
 
 type MessageForRead struct {
@@ -21,7 +21,7 @@ func ReadMessages(
 	topicName, consumerGroup string,
 	startIndex, readLength int64) ([]MessageForRead, int64, error) {
 	// 消息区间距离不能跨域2个分片
-	if readLength > config.FirstMQConfig.NumberOfFragmented {
+	if readLength > configs.FirstMQConfig.NumberOfFragmented {
 		return nil, 0, errors.New("长度超过分片容量")
 	}
 	if readLength < 1 {
@@ -84,11 +84,11 @@ func GetMessageIndexData(topicName string, startIndex, length int64) ([]string, 
 	dataLogPaths := make([]string, 0)
 
 	// 根据 offset 计算索引及数据文件位置
-	startFileIdex := startIndex / config.FirstMQConfig.NumberOfFragmented
+	startFileIdex := startIndex / configs.FirstMQConfig.NumberOfFragmented
 
 	// 检查消息是否位于2个分片中
 	endIndex := startIndex + length
-	endFileIdex := endIndex / config.FirstMQConfig.NumberOfFragmented
+	endFileIdex := endIndex / configs.FirstMQConfig.NumberOfFragmented
 
 	// 同一个分片
 	if startFileIdex == endFileIdex {
@@ -101,7 +101,7 @@ func GetMessageIndexData(topicName string, startIndex, length int64) ([]string, 
 			return nil, nil, err
 		}
 		defer indexFile.Close()
-		startIndexFor := startIndex - startFileIdex*config.FirstMQConfig.NumberOfFragmented
+		startIndexFor := startIndex - startFileIdex*configs.FirstMQConfig.NumberOfFragmented
 		for i := int64(0); i < length; i++ {
 			indexFile.Seek((startIndexFor+i)*16, 0)
 			var offsetStart int64 = 0
@@ -122,8 +122,8 @@ func GetMessageIndexData(topicName string, startIndex, length int64) ([]string, 
 	if err != nil {
 		return nil, nil, err
 	}
-	endLengthForFirst := config.FirstMQConfig.NumberOfFragmented*(startFileIdex+1) - startIndex
-	startForFirst := startIndex - startFileIdex*config.FirstMQConfig.NumberOfFragmented
+	endLengthForFirst := configs.FirstMQConfig.NumberOfFragmented*(startFileIdex+1) - startIndex
+	startForFirst := startIndex - startFileIdex*configs.FirstMQConfig.NumberOfFragmented
 	for i := int64(0); i < endLengthForFirst; i++ {
 		indexFile.Seek((i+startForFirst)*16, 0)
 		var offsetStart int64 = 0
@@ -148,7 +148,7 @@ func GetMessageIndexData(topicName string, startIndex, length int64) ([]string, 
 	if err != nil {
 		return dataLogPaths, indexData, nil
 	}
-	endLengthForSecond := endIndex - config.FirstMQConfig.NumberOfFragmented*endFileIdex
+	endLengthForSecond := endIndex - configs.FirstMQConfig.NumberOfFragmented*endFileIdex
 	for i := int64(0); i < endLengthForSecond; i++ {
 		indexFile2.Seek(i*16, 0)
 		var offsetStart int64 = 0

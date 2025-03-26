@@ -2,9 +2,7 @@ module github.com/cnlesscode/firstMQServer
 
 go 1.23.1
 
-require github.com/cnlesscode/gotool v0.0.3
-
-require github.com/cnlesscode/firstKV v1.1.8
+require github.com/cnlesscode/gotool v0.0.6
 
 require (
 	github.com/gorilla/websocket v1.5.3
@@ -16,6 +14,7 @@ require (
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
+	github.com/cnlesscode/serverFinder v1.0.1
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-contrib/sse v0.1.0 // indirect

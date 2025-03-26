@@ -1,35 +1,31 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"runtime"
-	"time"
 
-	"github.com/cnlesscode/firstKV"
-	"github.com/cnlesscode/firstMQServer/config"
-	"github.com/cnlesscode/firstMQServer/kernel"
+	"github.com/cnlesscode/firstMQServer/configs"
 	"github.com/cnlesscode/firstMQServer/server"
+	"github.com/cnlesscode/serverFinder"
 )
 
 func main() {
-	if config.RunMode == "debug" {
-		go func() {
-			for {
-				time.Sleep(time.Second * 5)
-				fmt.Printf("协程数 : %v\n", runtime.NumGoroutine())
-				fmt.Printf("cap(kernel.MessageChannels[\"test\"]): %v\n", cap(kernel.MessageChannels["test"]))
-				fmt.Printf("len(kernel.MessageChannels[\"test\"]): %v\n", len(kernel.MessageChannels["test"]))
-			}
-		}()
-	}
+	// if config.RunMode == "debug" {
+	// 	go func() {
+	// 		for {
+	// 			time.Sleep(time.Second * 5)
+	// 			fmt.Printf("协程数 : %v\n", runtime.NumGoroutine())
+	// 			fmt.Printf("cap(kernel.MessageChannels[\"test\"]): %v\n", cap(kernel.MessageChannels["test"]))
+	// 			fmt.Printf("len(kernel.MessageChannels[\"test\"]): %v\n", len(kernel.MessageChannels["test"]))
+	// 		}
+	// 	}()
+	// }
 
-	log.Println("当前服务器IP:" + config.CurrentIP)
+	log.Println("当前服务器IP:" + configs.CurrentIP)
 
-	// 启动 firstKV 服务器
-	// 开启条件 : config.FirstKVConfig.Enable == "on"
+	// 启动 ServerFinder 服务
+	// 开启条件 : config.ServerFinderConfig.Enable == "on"
 	go func() {
-		firstKV.StartServer(config.FirstKVConfig)
+		serverFinder.Start(configs.ServerFinderConfig)
 	}()
 
 	// 开启 WS 服务

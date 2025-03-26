@@ -7,13 +7,13 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/cnlesscode/firstMQServer/config"
+	"github.com/cnlesscode/firstMQServer/configs"
 )
 
 // 读取存储索引 [ 当前存储最大值 - 整数 ]
 func GetSaveIndex(topicName string) (int64, error) {
 	saveIndexFilePath := path.Join(
-		config.FirstMQConfig.DataDir,
+		configs.FirstMQConfig.DataDir,
 		topicName,
 		"save_index.bin",
 	)
@@ -38,7 +38,7 @@ func InitConsumeIndexMapKey(topicName, consumerGroup string) string {
 // 整合消费索引文件路径
 func InitConsumeIndexFilePath(topicName, consumerGroup string) string {
 	baseDataDir := path.Join(
-		config.FirstMQConfig.DataDir,
+		configs.FirstMQConfig.DataDir,
 		topicName,
 		"consume_logs",
 	)
@@ -49,7 +49,7 @@ func InitConsumeIndexFilePath(topicName, consumerGroup string) string {
 // 返回 : 日志文件路径, 消息索引文件路径, 日志文件所在目录
 func InitLogFiles(topicName string, fileIdx int64) (string, string) {
 	baseDataDir := path.Join(
-		config.FirstMQConfig.DataDir,
+		configs.FirstMQConfig.DataDir,
 		topicName,
 	)
 	logfilePath := path.Join(

@@ -7,7 +7,7 @@ import (
 	"path"
 	"time"
 
-	"github.com/cnlesscode/firstMQServer/config"
+	"github.com/cnlesscode/firstMQServer/configs"
 )
 
 // 落盘函数
@@ -29,7 +29,7 @@ SaveMessageToDiskStart:
 		}
 		if getedValue {
 			messageCount++
-			if messageCount >= config.FirstMQConfig.MaxNumberForRepaireToDisk {
+			if messageCount >= configs.FirstMQConfig.MaxNumberForRepaireToDisk {
 				break
 			}
 		} else {
@@ -39,13 +39,13 @@ SaveMessageToDiskStart:
 				// 此处延迟时间越短 CPU 占用越高
 				// 主机运算速度快应该设置大一些，否则循环会占用 CPU
 				// 经测试 50 ~ 100 毫秒比较合理
-				time.Sleep(config.FirstMQConfig.IdleSleepTimeForWrite)
+				time.Sleep(configs.FirstMQConfig.IdleSleepTimeForWrite)
 			}
 		}
 	}
 	// 获取存储索引
 	saveIndexFilePath := path.Join(
-		config.FirstMQConfig.DataDir,
+		configs.FirstMQConfig.DataDir,
 		topicName,
 		"save_index.bin",
 	)
@@ -90,9 +90,9 @@ SaveMessageToDiskStart:
 
 	// 情况 2 : 非第一次落盘
 	// 通过数据长度及存储索引决定数据文件分配
-	fileIndex := saveIndex / config.FirstMQConfig.NumberOfFragmented
+	fileIndex := saveIndex / configs.FirstMQConfig.NumberOfFragmented
 	// 当前数据文件剩余条目数
-	fileResidueNumber := (fileIndex+1)*config.FirstMQConfig.NumberOfFragmented - saveIndex
+	fileResidueNumber := (fileIndex+1)*configs.FirstMQConfig.NumberOfFragmented - saveIndex
 
 	// 情况 2.1 : 当前分片有剩余空间
 	if fileResidueNumber > 0 {
@@ -105,7 +105,7 @@ SaveMessageToDiskStart:
 		logFilePath, indxFilePath := InitLogFiles(topicName, fileIndex)
 		// 新的分片第一次落盘
 		var startOffset int64 = 0
-		if fileResidueNumber == config.FirstMQConfig.NumberOfFragmented {
+		if fileResidueNumber == configs.FirstMQConfig.NumberOfFragmented {
 			startOffset = 0
 		} else {
 			fi, err := os.Stat(logFilePath)
@@ -229,7 +229,7 @@ func SaveMessageToDiskBase(
 	}
 	indexFileSize := indexFileStatus.Size()
 	countedSaveIndex := indexFileSize / 16
-	saveIndexCurrent := saveIndex % config.FirstMQConfig.NumberOfFragmented
+	saveIndexCurrent := saveIndex % configs.FirstMQConfig.NumberOfFragmented
 	if countedSaveIndex != saveIndexCurrent {
 		saveIndex = saveIndex + (countedSaveIndex - saveIndexCurrent)
 	}

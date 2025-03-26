@@ -131,7 +131,7 @@ const { createApp, ref } = Vue;
 createApp({
     data:function(){
         return {
-            serverAddr : "192.168.31.188:8802",
+            serverAddr : "192.168.31.188:8889",
             responseMessage : "",
             socket : null,
             serverList : null,
@@ -227,7 +227,7 @@ createApp({
                     this.defaultMessage = '{"Action":2, "Topic":"default", "ConsumerGroup":"default"}';
                 break;
                 case 3:
-                    this.defaultMessage = '{"Action":3, "Topic":"test"}';
+                    this.defaultMessage = '{"Action":3, "Topic":"default"}';
                 break;
                 case 7:
                     this.defaultMessage = '{"Action":7, "Topic":"default",  "ConsumerGroup":"consumer01"}';

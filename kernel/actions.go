@@ -2,13 +2,12 @@ package kernel
 
 import (
 	"encoding/json"
-	"fmt"
 	"net"
 	"time"
 
-	"github.com/cnlesscode/firstKV"
-	"github.com/cnlesscode/firstMQServer/config"
+	"github.com/cnlesscode/firstMQServer/configs"
 	"github.com/cnlesscode/gotool"
+	"github.com/cnlesscode/serverFinder"
 )
 
 // 在各个集群节点上创建话题
@@ -63,25 +62,23 @@ func GetClusterNodes() (map[string]string, error) {
 	nodes := make(map[string]string, 0)
 	conn, err := net.DialTimeout(
 		"tcp",
-		config.FirstKVConfig.Host+":"+config.FirstKVConfig.Port,
+		configs.ServerFinderConfig.Host+":"+configs.ServerFinderConfig.Port,
 		time.Second*5,
 	)
 	if err != nil {
 		return nodes, err
 	}
 	defer conn.Close()
-	message := firstKV.ReceiveMessage{
+	message := serverFinder.ReceiveMessage{
 		Action:  "get",
 		MainKey: "firstMQServers",
 	}
-	response, err := firstKV.Send(conn, message, true)
+	response, err := serverFinder.Send(conn, message, true)
 	if err != nil {
 		return nodes, err
 	}
-	responseData := make(map[string]any)
-	err = json.Unmarshal([]byte(response.Data.(string)), &responseData)
-	fmt.Printf("responseData: %v\n", responseData)
-	if err != nil {
+	responseData, ok := response.Data.(map[string]any)
+	if !ok {
 		return nodes, err
 	}
 	for k := range responseData {

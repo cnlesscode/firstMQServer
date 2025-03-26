@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/cnlesscode/firstMQServer/config"
+	"github.com/cnlesscode/firstMQServer/configs"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -75,7 +75,7 @@ func StartWSServer() {
 	})
 
 	// 启动服务
-	log.Println("✔ FirstMQ : WebSocket 服务" + "启动成功，端口:" + config.FirstMQConfig.WebSocketPort)
-	ge.Run(":" + config.FirstMQConfig.WebSocketPort)
+	log.Println("✔ FirstMQ : WebSocket 服务" + "启动成功，端口:" + configs.FirstMQConfig.WebSocketPort)
+	ge.Run(":" + configs.FirstMQConfig.WebSocketPort)
 
 }
