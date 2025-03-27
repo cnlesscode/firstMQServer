@@ -8,9 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cnlesscode/firstMQServer/configs"
 	"github.com/cnlesscode/firstMQServer/kernel"
-	"github.com/cnlesscode/serverFinder"
 )
 
 // 消息类型
@@ -178,20 +176,6 @@ func Response(message *ReceiveMessage) []byte {
 		for _, node := range nodes {
 			conn, err := net.DialTimeout("tcp", node, time.Second*5)
 			if err != nil {
-				// 移除错误节点
-				serverFinderConn, err := net.DialTimeout(
-					"tcp",
-					configs.ServerFinderConfig.Host+":"+configs.ServerFinderConfig.Port,
-					time.Second*2,
-				)
-				if err == nil {
-					msg := serverFinder.ReceiveMessage{
-						Action:  "removeItem",
-						MainKey: "firstMQServers",
-						ItemKey: node,
-					}
-					serverFinder.Send(serverFinderConn, msg, true)
-				}
 				continue
 			}
 			message := kernel.SendMessageStruct{

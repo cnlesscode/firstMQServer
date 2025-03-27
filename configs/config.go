@@ -72,7 +72,6 @@ func init() {
 	// 3. ServerFinder 服务地址
 	ServerFinderConfig.Host = iniReader.String("ServerFinder", "Host")
 	ServerFinderConfig.Port = iniReader.String("ServerFinder", "Port")
-	ServerFinderConfig.ListenPort = iniReader.String("ServerFinder", "ListenInPort")
 	ServerFinderConfig.DataLogDir = path.Join(GlobalDataDir, iniReader.String("ServerFinder", "DataLogsDirName"))
 	ServerFinderConfig.Enable = iniReader.String("ServerFinder", "Enable")
 

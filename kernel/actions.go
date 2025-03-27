@@ -60,30 +60,15 @@ func CreateConsumeGroupForClusters(topicName, consumerGroup string) error {
 // 获取集群服务器列表
 func GetClusterNodes() (map[string]string, error) {
 	nodes := make(map[string]string, 0)
-	conn, err := net.DialTimeout(
-		"tcp",
+	serverFinder.GetData(
 		configs.ServerFinderConfig.Host+":"+configs.ServerFinderConfig.Port,
-		time.Second*5,
+		"firstMQServers",
+		func(data map[string]any) {
+			for k := range data {
+				nodes[k] = k
+			}
+		},
 	)
-	if err != nil {
-		return nodes, err
-	}
-	defer conn.Close()
-	message := serverFinder.ReceiveMessage{
-		Action:  "get",
-		MainKey: "firstMQServers",
-	}
-	response, err := serverFinder.Send(conn, message, true)
-	if err != nil {
-		return nodes, err
-	}
-	responseData, ok := response.Data.(map[string]any)
-	if !ok {
-		return nodes, err
-	}
-	for k := range responseData {
-		nodes[k] = k
-	}
 	return nodes, nil
 }
 
