@@ -1,24 +1,28 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"runtime"
+	"time"
 
 	"github.com/cnlesscode/firstMQServer/configs"
+	"github.com/cnlesscode/firstMQServer/kernel"
 	"github.com/cnlesscode/firstMQServer/server"
 	"github.com/cnlesscode/serverFinder"
 )
 
 func main() {
-	// if configs.RunMode == "debug" {
-	// 	go func() {
-	// 		for {
-	// 			time.Sleep(time.Second * 5)
-	// 			fmt.Printf("协程数 : %v\n", runtime.NumGoroutine())
-	// 			fmt.Printf("cap(kernel.MessageChannels[\"test\"]): %v\n", cap(kernel.MessageChannels["test"]))
-	// 			fmt.Printf("len(kernel.MessageChannels[\"test\"]): %v\n", len(kernel.MessageChannels["test"]))
-	// 		}
-	// 	}()
-	// }
+	if configs.RunMode == "debug" {
+		go func() {
+			for {
+				time.Sleep(time.Second * 5)
+				fmt.Printf("协程数 : %v\n", runtime.NumGoroutine())
+				fmt.Printf("cap(kernel.MessageChannels[\"test\"]): %v\n", cap(kernel.MessageChannels["test"]))
+				fmt.Printf("len(kernel.MessageChannels[\"test\"]): %v\n", len(kernel.MessageChannels["test"]))
+			}
+		}()
+	}
 
 	log.Println("当前服务器IP:" + configs.CurrentIP)
 

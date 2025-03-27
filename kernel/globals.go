@@ -19,7 +19,6 @@ var serverFinderConn net.Conn
 // 注册 FirstMQ 服务到 ServerFinder
 func RegisterFirstMQService() {
 	serverFinder.Register(
-		"register",
 		configs.ServerFinderConfig.Host+":"+configs.ServerFinderConfig.Port,
 		"firstMQServers",
 		configs.CurrentIP+":"+configs.FirstMQConfig.Port,
